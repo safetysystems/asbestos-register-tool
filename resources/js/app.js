@@ -5,7 +5,7 @@ import { createApp, h } from 'vue';
 
 createInertiaApp({
     progress: {
-        color: '#111827',
+        color: '#fafafa',
     },
     resolve: (name) =>
         resolvePageComponent(

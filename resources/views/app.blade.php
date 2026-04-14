@@ -11,7 +11,7 @@
         @endif
         @inertiaHead
     </head>
-    <body class="min-h-screen bg-stone-950 text-stone-50 antialiased">
+    <body>
         @inertia
     </body>
 </html>
