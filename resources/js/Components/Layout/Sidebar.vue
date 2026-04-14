@@ -9,6 +9,8 @@ const props = defineProps({
     },
 });
 
+const emit = defineEmits(['close-sidebar']);
+
 const currentPath = computed(() => usePage().url.split('?')[0]);
 
 function isActive(path) {
@@ -33,13 +35,23 @@ const sidebarClasses = computed(() =>
         :class="sidebarClasses"
     >
 
-        <div class="flex items-center px-4 py-6 mb-4">
+        <div class="flex items-center justify-between px-4 py-6 mb-4">
+            <button
+                type="button"
+                class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-200/60 dark:text-gray-300 dark:hover:bg-gray-800/60"
+                @click="emit('close-sidebar')"
+            >
+                <span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+            </button>
+
+            <div class="flex items-center min-w-0 flex-1">
             <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center mr-3 shadow-sm">
                 <span class="material-symbols-outlined text-on-primary-container" data-icon="token">token</span>
             </div>
             <div>
                 <h2 class="text-lg font-black text-gray-900 dark:text-white leading-tight">Curated Canvas</h2>
                 <p class="text-[10px] font-medium tracking-widest uppercase text-on-surface-variant/60">Enterprise Admin</p>
+            </div>
             </div>
         </div>
 

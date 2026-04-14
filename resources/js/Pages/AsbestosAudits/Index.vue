@@ -29,10 +29,9 @@ function isRowActive(id) {
     <AppShell>
     <div class="pt-24 px-8 pb-12">
       <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden border border-outline-variant/10">
-        <!-- Table Header Actions -->
         <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-container">
           <div>
-            <h2 class="text-lg font-black text-on-surface uppercase tracking-tight">Audit Register</h2>
+            <h2 class="text-lg font-bold text-on-surface uppercase tracking-tight">Audit Register</h2>
             <p class="text-xs text-on-surface-variant/60 font-medium">Manage customer data and track job order history.</p>
           </div>
           <div class="flex items-center gap-2">

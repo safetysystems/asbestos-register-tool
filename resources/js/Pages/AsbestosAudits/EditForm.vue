@@ -35,7 +35,7 @@ onBeforeUnmount(() => {
                         <!-- Site Details Form -->
                         <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 flex flex-col h-full">
                         <div class="px-4 md:px-8 py-5 border-b border-surface-container flex justify-between items-center bg-[#fdfdfd] rounded-t-xl">
-                            <h3 class="text-lg font-semibold text-on-surface tracking-tight uppercase text-[15px]">Site details</h3>
+                            <h3 class="text-lg font-bold text-on-surface tracking-tight uppercase text-[15px]">Site details</h3>
                             <button class="px-6 py-2 bg-primary-container text-on-primary-container text-[11px] font-semibold rounded-lg uppercase hover:bg-orange-500 transition-all shadow-sm">Edit</button>
                         </div>
                         <div class="p-4 md:p-10 flex-grow">
@@ -128,9 +128,9 @@ onBeforeUnmount(() => {
                         <div class="space-y-6">
                         <!-- Audits Info -->
                         <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10">
-                            <div class="px-6 py-4 border-b border-surface-container">
-                            <h3 class="text-sm font-semibold text-on-surface tracking-tight">Audits</h3>
-                            </div>
+                        <div class="px-4 md:px-8 py-5 border-b border-surface-container flex justify-between items-center bg-[#fdfdfd] rounded-t-xl">
+                            <h3 class="py-[5px] text-lg font-bold text-on-surface tracking-tight uppercase text-[15px]">Audits</h3>
+                        </div>
                             <div class="p-6 space-y-6 max-h-[220px] overflow-y-auto scrollbar-thin">
                             <!-- Asbestos Item -->
                             <div class="p-4 bg-[#f8f9fa] border border-stone-100 rounded-xl">
