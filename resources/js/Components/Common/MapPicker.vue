@@ -1,12 +1,12 @@
 <script setup>
-import { ref, onMounted, watch, nextTick } from 'vue';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { ref, onMounted, watch, nextTick } from "vue";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 const props = defineProps({
     modelValue: {
         type: Object,
-        default: () => ({ lat: -36.7570, lng: 144.2794 }),
+        default: () => ({ lat: -36.757, lng: 144.2794 }),
     },
     disabled: {
         type: Boolean,
@@ -14,7 +14,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(["update:modelValue"]);
 
 const mapContainer = ref(null);
 let map = null;
@@ -29,7 +29,7 @@ onMounted(() => {
 function initMap() {
     if (!mapContainer.value) return;
 
-    const lat = props.modelValue?.lat || -36.7570;
+    const lat = props.modelValue?.lat || -36.757;
     const lng = props.modelValue?.lng || 144.2794;
 
     map = L.map(mapContainer.value, {
@@ -38,43 +38,53 @@ function initMap() {
         zoomControl: true,
     });
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxZoom: 19,
     }).addTo(map);
 
     // Custom marker icon to fix default icon issue
     const markerIcon = L.divIcon({
-        className: 'custom-map-marker',
+        className: "custom-map-marker",
         html: '<div class="marker-pin"></div>',
         iconSize: [30, 42],
         iconAnchor: [15, 42],
     });
 
     if (props.modelValue?.lat && props.modelValue?.lng) {
-        marker = L.marker([lat, lng], { icon: markerIcon, draggable: !props.disabled }).addTo(map);
-        marker.on('dragend', onMarkerDrag);
+        marker = L.marker([lat, lng], {
+            icon: markerIcon,
+            draggable: !props.disabled,
+        }).addTo(map);
+        marker.on("dragend", onMarkerDrag);
     }
 
     if (!props.disabled) {
-        map.on('click', onMapClick);
+        map.on("click", onMapClick);
     }
 }
 
 function onMapClick(e) {
     const { lat, lng } = e.latlng;
     setMarker(lat, lng);
-    emit('update:modelValue', { lat: parseFloat(lat.toFixed(7)), lng: parseFloat(lng.toFixed(7)) });
+    emit("update:modelValue", {
+        lat: parseFloat(lat.toFixed(7)),
+        lng: parseFloat(lng.toFixed(7)),
+    });
 }
 
 function onMarkerDrag() {
     const { lat, lng } = marker.getLatLng();
-    emit('update:modelValue', { lat: parseFloat(lat.toFixed(7)), lng: parseFloat(lng.toFixed(7)) });
+    emit("update:modelValue", {
+        lat: parseFloat(lat.toFixed(7)),
+        lng: parseFloat(lng.toFixed(7)),
+    });
 }
 
 function setMarker(lat, lng) {
     const markerIcon = L.divIcon({
-        className: 'custom-map-marker',
+        className: "custom-map-marker",
         html: '<div class="marker-pin"></div>',
         iconSize: [30, 42],
         iconAnchor: [15, 42],
@@ -83,8 +93,11 @@ function setMarker(lat, lng) {
     if (marker) {
         marker.setLatLng([lat, lng]);
     } else {
-        marker = L.marker([lat, lng], { icon: markerIcon, draggable: !props.disabled }).addTo(map);
-        marker.on('dragend', onMarkerDrag);
+        marker = L.marker([lat, lng], {
+            icon: markerIcon,
+            draggable: !props.disabled,
+        }).addTo(map);
+        marker.on("dragend", onMarkerDrag);
     }
 }
 
@@ -93,15 +106,19 @@ function clearMarker() {
         map.removeLayer(marker);
         marker = null;
     }
-    emit('update:modelValue', { lat: null, lng: null });
+    emit("update:modelValue", { lat: null, lng: null });
 }
 
-watch(() => props.modelValue, (val) => {
-    if (val?.lat && val?.lng && map) {
-        setMarker(val.lat, val.lng);
-        map.setView([val.lat, val.lng], map.getZoom());
-    }
-}, { deep: true });
+watch(
+    () => props.modelValue,
+    (val) => {
+        if (val?.lat && val?.lng && map) {
+            setMarker(val.lat, val.lng);
+            map.setView([val.lat, val.lng], map.getZoom());
+        }
+    },
+    { deep: true },
+);
 
 defineExpose({ clearMarker });
 </script>
@@ -109,7 +126,10 @@ defineExpose({ clearMarker });
 <template>
     <div class="space-y-2">
         <div class="flex items-center justify-between">
-            <label class="text-[11px] font-bold tracking-widest text-on-surface-variant uppercase ml-1">Pin Location</label>
+            <label
+                class="app-text font-bold tracking-widest text-on-surface-variant uppercase ml-1"
+                >Pin Location</label
+            >
             <button
                 v-if="modelValue?.lat && modelValue?.lng"
                 type="button"
@@ -123,11 +143,16 @@ defineExpose({ clearMarker });
             ref="mapContainer"
             class="w-full h-80 rounded-lg overflow-hidden border border-outline-variant/20"
         ></div>
-        <div v-if="modelValue?.lat && modelValue?.lng" class="flex items-center gap-3 text-[10px] text-on-surface-variant/60 font-mono">
+        <div
+            v-if="modelValue?.lat && modelValue?.lng"
+            class="flex items-center gap-3 text-[10px] text-on-surface-variant/60 font-mono"
+        >
             <span>Lat: {{ modelValue.lat }}</span>
             <span>Lng: {{ modelValue.lng }}</span>
         </div>
-        <p v-else class="text-[10px] text-on-surface-variant/40 italic">Click on the map to pin a location</p>
+        <p v-else class="text-[10px] text-on-surface-variant/40 italic">
+            Click on the map to pin a location
+        </p>
     </div>
 </template>
 
@@ -146,10 +171,10 @@ defineExpose({ clearMarker });
     left: 50%;
     top: 50%;
     margin: -15px 0 0 -15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 .marker-pin::after {
-    content: '';
+    content: "";
     width: 14px;
     height: 14px;
     margin: 8px 0 0 8px;

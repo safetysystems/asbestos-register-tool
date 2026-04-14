@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CustomerRequest;
 use App\Models\Customer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -14,13 +14,24 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         return Inertia::render('Customers/Index', [
             'customers' => Customer::query()
                 ->with('properties')
+                ->when($request->query('search'), function ($query, $search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%");
+                    });
+                })
                 ->orderBy('id', 'desc')
-                ->paginate(15),
+                ->paginate(10)
+                ->withQueryString(),
+            'filters' => [
+                'search' => $request->query('search', ''),
+            ],
         ]);
     }
 
@@ -35,52 +46,22 @@ class CustomerController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CustomerRequest $request): RedirectResponse
     {
-        try {
-            $validated = $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'email', 'max:255', 'unique:customers,email'],
-                'phone' => ['nullable', 'string', 'max:255'],
-                'address' => ['nullable', 'string', 'max:255'],
-                'suburb' => ['nullable', 'string', 'max:255'],
-                'state' => ['nullable', 'string', 'max:255'],
-                'postcode' => ['nullable', 'string', 'max:255'],
-                'properties' => ['nullable', 'array'],
-                'properties.*.name' => ['nullable', 'string', 'max:255'],
-                'properties.*.address' => ['nullable', 'string', 'max:255'],
-                'properties.*.suburb' => ['nullable', 'string', 'max:255'],
-                'properties.*.state' => ['nullable', 'string', 'max:255'],
-                'properties.*.postcode' => ['nullable', 'string', 'max:255'],
-                'properties.*.property_type' => ['nullable', 'string', 'max:255'],
-                'properties.*.contact_name' => ['nullable', 'string', 'max:255'],
-                'properties.*.contact_phone' => ['nullable', 'string', 'max:255'],
-                'properties.*.contact_email' => ['nullable', 'email', 'max:255'],
-                'properties.*.latitude' => ['nullable', 'numeric', 'between:-90,90'],
-                'properties.*.longitude' => ['nullable', 'numeric', 'between:-180,180'],
-            ]);
+        $validated = $request->validated();
 
-            \Log::info('Customer store starting', ['data' => $validated]);
+        $customer = Customer::create(collect($validated)->except('properties')->toArray());
 
-            $customer = Customer::create(collect($validated)->except('properties')->toArray());
-
-            if (! empty($validated['properties'])) {
-                $customer->properties()->createMany(
-                    collect($validated['properties'])->map(function ($p) {
-                        $prop = collect($p)->except('_location')->toArray();
-                        if (isset($prop['latitude'])) $prop['latitude'] = $prop['latitude'] === null || $prop['latitude'] === '' ? null : (float) $prop['latitude'];
-                        if (isset($prop['longitude'])) $prop['longitude'] = $prop['longitude'] === null || $prop['longitude'] === '' ? null : (float) $prop['longitude'];
-                        return $prop;
-                    })->toArray()
-                );
-            }
-
-            return redirect()->route('customers.index')
-                ->with('success', 'Customer created successfully.');
-        } catch (\Exception $e) {
-            \Log::error('Customer store failed', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-            return back()->withErrors(['error' => 'Failed to save customer: ' . $e->getMessage()])->withInput();
+        if (! empty($validated['properties'])) {
+            $customer->properties()->createMany(
+                collect($validated['properties'])->map(function (array $p): array {
+                    return collect($p)->except('_location')->toArray();
+                })->toArray()
+            );
         }
+
+        return redirect()->route('customers.index')
+            ->with('success', 'Customer created successfully.');
     }
 
     /**
@@ -106,61 +87,30 @@ class CustomerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Customer $customer): RedirectResponse
+    public function update(CustomerRequest $request, Customer $customer): RedirectResponse
     {
-        try {
-            $validated = $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'email', 'max:255', Rule::unique('customers')->ignore($customer)],
-                'phone' => ['nullable', 'string', 'max:255'],
-                'address' => ['nullable', 'string', 'max:255'],
-                'suburb' => ['nullable', 'string', 'max:255'],
-                'state' => ['nullable', 'string', 'max:255'],
-                'postcode' => ['nullable', 'string', 'max:255'],
-                'properties' => ['nullable', 'array'],
-                'properties.*.id' => ['nullable', 'integer'],
-                'properties.*.name' => ['nullable', 'string', 'max:255'],
-                'properties.*.address' => ['nullable', 'string', 'max:255'],
-                'properties.*.suburb' => ['nullable', 'string', 'max:255'],
-                'properties.*.state' => ['nullable', 'string', 'max:255'],
-                'properties.*.postcode' => ['nullable', 'string', 'max:255'],
-                'properties.*.property_type' => ['nullable', 'string', 'max:255'],
-                'properties.*.contact_name' => ['nullable', 'string', 'max:255'],
-                'properties.*.contact_phone' => ['nullable', 'string', 'max:255'],
-                'properties.*.contact_email' => ['nullable', 'email', 'max:255'],
-                'properties.*.latitude' => ['nullable', 'numeric', 'between:-90,90'],
-                'properties.*.longitude' => ['nullable', 'numeric', 'between:-180,180'],
-            ]);
+        $validated = $request->validated();
 
-            \Log::info('Customer update starting', ['id' => $customer->id, 'data' => $validated]);
+        $customer->update(collect($validated)->except('properties')->toArray());
 
-            $customer->update(collect($validated)->except('properties')->toArray());
+        $existingIds = [];
 
-            $existingIds = [];
+        foreach ($validated['properties'] ?? [] as $propertyData) {
+            $updateData = collect($propertyData)->except(['_location', 'id'])->toArray();
 
-            foreach ($validated['properties'] ?? [] as $propertyData) {
-                $updateData = collect($propertyData)->except(['_location', 'id'])->toArray();
-                
-                if (isset($updateData['latitude'])) $updateData['latitude'] = $updateData['latitude'] === null || $updateData['latitude'] === '' ? null : (float) $updateData['latitude'];
-                if (isset($updateData['longitude'])) $updateData['longitude'] = $updateData['longitude'] === null || $updateData['longitude'] === '' ? null : (float) $updateData['longitude'];
-
-                if (! empty($propertyData['id'])) {
-                    $customer->properties()->where('id', $propertyData['id'])->update($updateData);
-                    $existingIds[] = (int) $propertyData['id'];
-                } else {
-                    $property = $customer->properties()->create($updateData);
-                    $existingIds[] = (int) $property->id;
-                }
+            if (! empty($propertyData['id'])) {
+                $customer->properties()->where('id', $propertyData['id'])->update($updateData);
+                $existingIds[] = (int) $propertyData['id'];
+            } else {
+                $property = $customer->properties()->create($updateData);
+                $existingIds[] = (int) $property->id;
             }
-
-            $customer->properties()->whereNotIn('id', $existingIds)->delete();
-
-            return redirect()->route('customers.index')
-                ->with('success', 'Customer updated successfully.');
-        } catch (\Exception $e) {
-            \Log::error('Customer update failed', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-            return back()->withErrors(['error' => 'Failed to update customer: ' . $e->getMessage()])->withInput();
         }
+
+        $customer->properties()->whereNotIn('id', $existingIds)->delete();
+
+        return redirect()->route('customers.index')
+            ->with('success', 'Customer updated successfully.');
     }
 
     /**

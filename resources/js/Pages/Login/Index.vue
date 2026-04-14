@@ -1,3 +1,7 @@
+<script setup>
+import Button from "@/Components/Common/Button.vue";
+</script>
+
 <template>
 	<div class="login-page bg-background text-on-background min-h-screen selection:bg-secondary-container flex flex-col items-center justify-center p-4 md:p-8">
 		<main class="w-full max-w-md">
@@ -29,9 +33,9 @@
 						</div>
 
 						<!-- Primary Action -->
-						<button class="w-full h-12 bg-orange-400 text-on-primary-container font-semibold rounded-lg shadow-sm hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="submit">
+						<Button class="w-full h-12 flex items-center justify-center" type="submit">
 							Sign In
-						</button>
+						</Button>
 					</form>
 				</div>
 			</div>

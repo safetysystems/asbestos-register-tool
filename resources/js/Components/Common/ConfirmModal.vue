@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 
 const props = defineProps({
     show: {
@@ -8,19 +8,19 @@ const props = defineProps({
     },
     title: {
         type: String,
-        default: 'Confirm Delete',
+        default: "Confirm Delete",
     },
     message: {
         type: String,
-        default: 'Are you sure? This action cannot be undone.',
+        default: "Are you sure? This action cannot be undone.",
     },
     confirmLabel: {
         type: String,
-        default: 'Delete',
+        default: "Delete",
     },
     cancelLabel: {
         type: String,
-        default: 'Cancel',
+        default: "Cancel",
     },
     processing: {
         type: Boolean,
@@ -28,7 +28,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['confirm', 'cancel']);
+const emit = defineEmits(["confirm", "cancel"]);
 </script>
 
 <template>
@@ -41,9 +41,15 @@ const emit = defineEmits(['confirm', 'cancel']);
             leave-from-class="opacity-100"
             leave-to-class="opacity-0"
         >
-            <div v-if="show" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div
+                v-if="show"
+                class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            >
                 <!-- Backdrop -->
-                <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="emit('cancel')" />
+                <div
+                    class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                    @click="emit('cancel')"
+                />
 
                 <!-- Modal -->
                 <Transition
@@ -54,33 +60,52 @@ const emit = defineEmits(['confirm', 'cancel']);
                     leave-from-class="opacity-100 scale-100"
                     leave-to-class="opacity-0 scale-95"
                 >
-                    <div v-if="show" class="relative bg-surface-container-lowest rounded-xl shadow-2xl border border-outline-variant/10 w-full max-w-md overflow-hidden">
+                    <div
+                        v-if="show"
+                        class="relative bg-surface-container-lowest rounded-xl shadow-2xl border border-outline-variant/10 w-full max-w-md overflow-hidden"
+                    >
                         <div class="p-6">
                             <div class="flex items-start gap-4">
-                                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-error/10 flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-error text-xl" data-icon="warning">warning</span>
+                                <div
+                                    class="flex-shrink-0 w-10 h-10 rounded-full bg-error/10 flex items-center justify-center"
+                                >
+                                    <span
+                                        class="material-symbols-outlined text-error text-xl"
+                                        data-icon="warning"
+                                        >warning</span
+                                    >
                                 </div>
                                 <div>
-                                    <h3 class="text-base font-bold text-on-surface">{{ title }}</h3>
-                                    <p class="mt-1 text-sm text-on-surface-variant/70">{{ message }}</p>
+                                    <h3
+                                        class="text-base font-bold text-on-surface"
+                                    >
+                                        {{ title }}
+                                    </h3>
+                                    <p
+                                        class="mt-1 text-sm text-on-surface-variant/70"
+                                    >
+                                        {{ message }}
+                                    </p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="px-6 py-4 bg-surface-container-low/30 border-t border-surface-container flex items-center justify-end gap-3">
+                        <div
+                            class="px-6 py-4 bg-surface-container-low/30 border-t border-surface-container flex items-center justify-end gap-3"
+                        >
                             <button
-                                class="px-4 py-2 text-[11px] font-bold uppercase tracking-[0.15em] text-on-surface-variant rounded-lg hover:bg-surface-container-high transition-all"
+                                class="px-4 py-2 app-text font-bold uppercase tracking-[0.15em] text-on-surface-variant rounded-lg hover:bg-surface-container-high transition-all"
                                 :disabled="processing"
                                 @click="emit('cancel')"
                             >
                                 {{ cancelLabel }}
                             </button>
                             <button
-                                class="px-5 py-2 bg-error text-white text-[11px] font-bold uppercase tracking-[0.15em] rounded-lg hover:bg-red-700 transition-all shadow-sm disabled:opacity-50"
+                                class="px-5 py-2 bg-error text-white app-text font-bold uppercase tracking-[0.15em] rounded-lg hover:bg-red-700 transition-all shadow-sm disabled:opacity-50"
                                 :disabled="processing"
                                 @click="emit('confirm')"
                             >
-                                {{ processing ? 'Deleting...' : confirmLabel }}
+                                {{ processing ? "Deleting..." : confirmLabel }}
                             </button>
                         </div>
                     </div>

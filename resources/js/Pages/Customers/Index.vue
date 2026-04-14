@@ -1,12 +1,28 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import AppShell from '@/Components/Layout/AppShell.vue';
 import Footer from '@/Components/Layout/Footer.vue';
 import ConfirmModal from '@/Components/Common/ConfirmModal.vue';
+import Button from '@/Components/Common/Button.vue';
+import Pagination from '@/Components/Common/Pagination.vue';
 
-defineProps({
+const props = defineProps({
     customers: Object,
+    filters: Object,
+});
+
+const search = ref(props.filters?.search ?? '');
+let searchTimeout = null;
+
+watch(search, (value) => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+        router.get('/customers', { search: value || undefined }, {
+            preserveState: true,
+            replace: true,
+        });
+    }, 300);
 });
 
 const activeRowId = ref(null);
@@ -55,11 +71,16 @@ function deleteCustomer() {
             <h2 class="text-lg font-bold text-on-surface uppercase tracking-tight">Customer</h2>
             <p class="text-xs text-on-surface-variant/60 font-medium">Manage customer data and track subscription history.</p>
           </div>
-          <div class="flex items-center gap-2">
-            <button class="flex items-center gap-2 px-3 py-2 bg-surface-container-high text-on-surface-variant rounded-lg font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-surface-container-highest transition-all">
-              <span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
-              Filters
-            </button>
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-lg" data-icon="search">search</span>
+              <input
+                v-model="search"
+                type="text"
+                placeholder="Search customers..."
+                class="pl-10 pr-4 py-2 w-64 bg-surface-container-highest border-none rounded-lg app-text focus:ring-2 focus:ring-primary-container outline-none transition-all"
+              />
+            </div>
             <Link href="/customers/create" class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-black text-[10px] uppercase tracking-[0.2em] hover:bg-orange-500 transition-all shadow-sm">
               <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
               Add New
@@ -73,11 +94,11 @@ function deleteCustomer() {
             <thead>
               <tr class="border-b border-surface-container">
                 <th class="w-10 px-6 py-4"></th>
-                <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Customer Name</th>
-                <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Email</th>
-                <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Phone</th>
-                <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60">Address</th>
-                <th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60 text-right">Actions</th>
+                <th class="px-6 py-4 app-text font-bold uppercase tracking-widest text-on-surface-variant/60">Customer Name</th>
+                <th class="px-6 py-4 app-text font-bold uppercase tracking-widest text-on-surface-variant/60">Email</th>
+                <th class="px-6 py-4 app-text font-bold uppercase tracking-widest text-on-surface-variant/60">Phone</th>
+                <th class="px-6 py-4 app-text font-bold uppercase tracking-widest text-on-surface-variant/60">Address</th>
+                <th class="px-6 py-4 app-text font-bold uppercase tracking-widest text-on-surface-variant/60 text-right">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-surface-container">
@@ -186,30 +207,7 @@ function deleteCustomer() {
         </div>
 
         <!-- Pagination -->
-        <div class="p-6 bg-surface-container-low/30 border-t border-surface-container flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div class="flex items-center gap-4">
-            <p class="text-sm text-on-surface-variant">Showing <span class="font-bold text-on-surface">{{ customers.from ?? 0 }}-{{ customers.to ?? 0 }}</span> of <span class="font-bold text-on-surface">{{ customers.total }}</span> customers</p>
-          </div>
-          
-          <div class="flex items-center gap-1">
-            <template v-for="link in customers.links" :key="link.label">
-              <Link
-                v-if="link.url"
-                :href="link.url"
-                class="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold transition-colors"
-                :class="link.active
-                  ? 'bg-primary-container text-on-primary-container font-black shadow-sm'
-                  : 'hover:bg-surface-container-high text-on-surface-variant'"
-                v-html="link.label"
-              />
-              <span
-                v-else
-                class="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold text-on-surface-variant/30"
-                v-html="link.label"
-              />
-            </template>
-          </div>
-        </div>
+        <Pagination :paginator="customers" noun="customers" />
       </div>
     </div>
         <Footer />

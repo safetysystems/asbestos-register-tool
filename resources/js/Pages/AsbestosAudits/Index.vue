@@ -3,6 +3,8 @@ import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import AppShell from '@/Components/Layout/AppShell.vue';
 import Footer from '@/Components/Layout/Footer.vue';
+import Button from '@/Components/Common/Button.vue';
+import Pagination from '@/Components/Common/Pagination.vue';
 
 const isSampleModalOpen = ref(false);
 const activeRowId = ref(null);
@@ -34,11 +36,15 @@ function isRowActive(id) {
             <h2 class="text-lg font-bold text-on-surface uppercase tracking-tight">Audit Register</h2>
             <p class="text-xs text-on-surface-variant/60 font-medium">Manage customer data and track job order history.</p>
           </div>
-          <div class="flex items-center gap-2">
-            <button class="flex items-center gap-2 px-3 py-2 bg-surface-container-high text-on-surface-variant rounded-lg font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-surface-container-highest transition-all">
-              <span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
-              Filters
-            </button>
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 text-lg" data-icon="search">search</span>
+              <input
+                type="text"
+                placeholder="Search audits..."
+                class="pl-10 pr-4 py-2 w-64 bg-surface-container-highest border-none rounded-lg app-text focus:ring-2 focus:ring-primary-container outline-none transition-all"
+              />
+            </div>
             <a href="/asbestos-audits/create" class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-black text-[10px] uppercase tracking-[0.2em] hover:bg-orange-500 transition-all shadow-sm">
               <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
               Add New
@@ -446,37 +452,11 @@ function isRowActive(id) {
         </div>
 
         <!-- Pagination -->
-        <div class="p-6 bg-surface-container-low/30 border-t border-surface-container flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div class="flex items-center gap-4">
-            <p class="text-sm text-on-surface-variant">Showing <span class="font-bold text-on-surface">1-5</span> of <span class="font-bold text-on-surface">1,284</span> customers</p>
-            <div class="h-4 w-[1px] bg-outline-variant/30 mx-2 hidden sm:block"></div>
-            <div class="flex items-center gap-2">
-              <label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant/60" for="rows-per-page">Rows:</label>
-              <select class="bg-transparent border-none text-sm font-bold text-on-surface focus:ring-0 cursor-pointer" id="rows-per-page">
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="flex items-center gap-1">
-            <button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant disabled:opacity-30 group" disabled="" title="Previous Page">
-              <span class="material-symbols-outlined transition-transform group-active:-translate-x-1" data-icon="chevron_left">chevron_left</span>
-            </button>
-            <div class="flex items-center gap-1 mx-2">
-              <button class="w-9 h-9 flex items-center justify-center rounded-lg bg-primary-container text-on-primary-container font-black text-sm shadow-sm">1</button>
-              <button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-surface-container-high text-on-surface-variant font-bold text-sm transition-colors">2</button>
-              <button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-surface-container-high text-on-surface-variant font-bold text-sm transition-colors">3</button>
-              <span class="px-2 text-on-surface-variant/40 font-bold self-end mb-2">...</span>
-              <button class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-surface-container-high text-on-surface-variant font-bold text-sm transition-colors">257</button>
-            </div>
-            <button class="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant group" title="Next Page">
-              <span class="material-symbols-outlined transition-transform group-active:translate-x-1" data-icon="chevron_right">chevron_right</span>
-            </button>
-          </div>
-        </div>
+        <Pagination
+          v-if="$page.props.audits"
+          :paginator="$page.props.audits"
+          noun="audits"
+        />
       </div>
     </div>
         <Footer />
