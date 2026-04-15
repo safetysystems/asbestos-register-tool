@@ -65,12 +65,14 @@ class PropertyAsbestosAuditController extends Controller
 
         $audit = PropertyAsbestosAudit::create(collect($validated)->except('samples')->toArray());
 
-        if (! empty($validated['samples'])) {
-            $audit->samples()->createMany(
-                collect($validated['samples'])->map(function (array $sample): array {
-                    return collect($sample)->except('id')->toArray();
-                })->toArray()
+        foreach (($validated['samples'] ?? []) as $sampleData) {
+            $sample = $audit->samples()->create(
+                collect($sampleData)->except(['id', 'images'])->toArray()
             );
+
+            foreach (($sampleData['images'] ?? []) as $image) {
+                $sample->addMedia($image)->toMediaCollection('sample_images');
+            }
         }
 
         return redirect()->route('asbestosaudits.index')
@@ -110,15 +112,22 @@ class PropertyAsbestosAuditController extends Controller
 
         $existingIds = [];
 
-        foreach ($validated['samples'] ?? [] as $sampleData) {
-            $updateData = collect($sampleData)->except('id')->toArray();
+        foreach (($validated['samples'] ?? []) as $sampleData) {
+            $updateData = collect($sampleData)->except(['id', 'images'])->toArray();
 
             if (! empty($sampleData['id'])) {
                 $asbestosaudit->samples()->where('id', $sampleData['id'])->update($updateData);
+                $sample = $asbestosaudit->samples()->find($sampleData['id']);
                 $existingIds[] = (int) $sampleData['id'];
             } else {
                 $sample = $asbestosaudit->samples()->create($updateData);
                 $existingIds[] = (int) $sample->id;
+            }
+
+            if ($sample) {
+                foreach (($sampleData['images'] ?? []) as $image) {
+                    $sample->addMedia($image)->toMediaCollection('sample_images');
+                }
             }
         }
 
