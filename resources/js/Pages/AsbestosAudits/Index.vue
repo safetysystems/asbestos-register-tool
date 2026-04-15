@@ -225,6 +225,11 @@ onBeforeUnmount(() => {
                     </td>
                     <td class="px-6 py-5 text-right">
                       <div class="flex items-center justify-end gap-2" @click.stop>
+                        <Button
+                            title="Edit Audit"
+                            @click="router.visit(`/auditing/${audit.id}`)"
+                            >Start Audit
+                        </Button>
                         <button
                           class="cursor-pointer p-2 hover:bg-surface-container-high rounded-lg transition-colors text-on-surface-variant"
                           title="Edit Audit"

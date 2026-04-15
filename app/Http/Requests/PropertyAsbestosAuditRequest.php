@@ -42,6 +42,8 @@ class PropertyAsbestosAuditRequest extends FormRequest
             'samples.*.friability' => ['nullable', 'string', 'max:255'],
             'samples.*.hazard_priority' => ['nullable', 'string', 'max:255'],
             'samples.*.comments' => ['nullable', 'string'],
+            'samples.*.images' => ['nullable', 'array'],
+            'samples.*.images.*' => ['file', 'image', 'max:10240'],
         ];
     }
 }

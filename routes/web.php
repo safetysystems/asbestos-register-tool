@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuditingController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PropertyAsbestosAuditController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::get('/asbestos-audits/{asbestosaudit}/edit', [PropertyAsbestosAuditContro
 Route::put('/asbestos-audits/{asbestosaudit}', [PropertyAsbestosAuditController::class, 'update'])->name('asbestosaudits.update');
 Route::delete('/asbestos-audits/{asbestosaudit}', [PropertyAsbestosAuditController::class, 'destroy'])->name('asbestosaudits.destroy');
 
+Route::get('/auditing/{asbestosaudit}', [AuditingController::class, 'show'])->name('auditing.show');
 
 // Route::get('/error/403', fn () => abort(403));
 // Route::get('/error/500', fn () => abort(500));
