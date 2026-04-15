@@ -94,14 +94,14 @@ const emit = defineEmits(["confirm", "cancel"]);
                             class="px-6 py-4 bg-surface-container-low/30 border-t border-surface-container flex items-center justify-end gap-3"
                         >
                             <button
-                                class="px-4 py-2 app-text font-bold uppercase tracking-[0.15em] text-on-surface-variant rounded-lg hover:bg-surface-container-high transition-all"
+                                class="cursor-pointer px-4 py-2 app-text font-bold uppercase tracking-[0.15em] bg-on-surface-variant/20 text-on-surface-variant rounded-lg hover:bg-surface-container-high transition-all"
                                 :disabled="processing"
                                 @click="emit('cancel')"
                             >
                                 {{ cancelLabel }}
                             </button>
                             <button
-                                class="px-5 py-2 bg-error text-white app-text font-bold uppercase tracking-[0.15em] rounded-lg hover:bg-red-700 transition-all shadow-sm disabled:opacity-50"
+                                class="cursor-pointer px-5 py-2 bg-error text-white app-text font-bold uppercase tracking-[0.15em] rounded-lg hover:bg-red-700 transition-all shadow-sm disabled:opacity-50"
                                 :disabled="processing"
                                 @click="emit('confirm')"
                             >

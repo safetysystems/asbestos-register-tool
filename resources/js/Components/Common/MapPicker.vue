@@ -133,7 +133,7 @@ defineExpose({ clearMarker });
             <button
                 v-if="modelValue?.lat && modelValue?.lng"
                 type="button"
-                class="text-[10px] font-bold text-error uppercase tracking-widest hover:underline"
+                class="app-text font-bold text-error uppercase tracking-widest hover:underline"
                 @click="clearMarker"
             >
                 Clear Pin
@@ -145,12 +145,12 @@ defineExpose({ clearMarker });
         ></div>
         <div
             v-if="modelValue?.lat && modelValue?.lng"
-            class="flex items-center gap-3 text-[10px] text-on-surface-variant/60 font-mono"
+            class="flex items-center gap-3 app-text text-on-surface-variant/60 font-mono"
         >
             <span>Lat: {{ modelValue.lat }}</span>
             <span>Lng: {{ modelValue.lng }}</span>
         </div>
-        <p v-else class="text-[10px] text-on-surface-variant/40 italic">
+        <p v-else class="app-text text-on-surface-variant/40 italic">
             Click on the map to pin a location
         </p>
     </div>

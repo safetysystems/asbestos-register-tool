@@ -102,7 +102,7 @@ const recentAudits = [
                     <div class="flex items-center gap-2">
                         <a
                             href="/customers"
-                            class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-lg font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-surface-container-highest transition-all"
+                            class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-lg font-bold app-text uppercase tracking-[0.2em] hover:bg-surface-container-highest transition-all"
                         >
                             <span
                                 class="material-symbols-outlined text-sm"
@@ -113,7 +113,7 @@ const recentAudits = [
                         </a>
                         <a
                             href="/asbestos-audits"
-                            class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-black text-[10px] uppercase tracking-[0.2em] hover:bg-orange-500 transition-all shadow-sm"
+                            class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-black app-text uppercase tracking-[0.2em] hover:bg-orange-500 transition-all shadow-sm"
                         >
                             <span
                                 class="material-symbols-outlined text-sm"
@@ -135,7 +135,7 @@ const recentAudits = [
                     >
                         <div class="flex items-center justify-between mb-3">
                             <p
-                                class="text-[10px] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70"
+                                class="app-text font-bold uppercase tracking-[0.18em] text-on-surface-variant/70"
                             >
                                 {{ card.label }}
                             </p>
@@ -175,22 +175,22 @@ const recentAudits = [
                             <thead>
                                 <tr class="border-b border-surface-container">
                                     <th
-                                        class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60"
+                                        class="px-6 py-3 app-text font-bold uppercase tracking-widest text-on-surface-variant/60"
                                     >
                                         Customer
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60"
+                                        class="px-6 py-3 app-text font-bold uppercase tracking-widest text-on-surface-variant/60"
                                     >
                                         Plan
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60"
+                                        class="px-6 py-3 app-text font-bold uppercase tracking-widest text-on-surface-variant/60"
                                     >
                                         Status
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60"
+                                        class="px-6 py-3 app-text font-bold uppercase tracking-widest text-on-surface-variant/60"
                                     >
                                         Last Activity
                                     </th>
@@ -216,13 +216,13 @@ const recentAudits = [
                                     </td>
                                     <td class="px-6 py-4">
                                         <span
-                                            class="px-3 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded-full uppercase tracking-tighter"
+                                            class="px-3 py-1 bg-blue-50 text-blue-700 app-text font-bold rounded-full uppercase tracking-tighter"
                                             >{{ customer.plan }}</span
                                         >
                                     </td>
                                     <td class="px-6 py-4">
                                         <span
-                                            class="px-3 py-1 text-[10px] font-bold rounded-full uppercase tracking-tighter"
+                                            class="px-3 py-1 app-text font-bold rounded-full uppercase tracking-tighter"
                                             :class="
                                                 customer.status === 'Active'
                                                     ? 'bg-green-50 text-green-700'
@@ -261,22 +261,22 @@ const recentAudits = [
                             <thead>
                                 <tr class="border-b border-surface-container">
                                     <th
-                                        class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60"
+                                        class="px-6 py-3 app-text font-bold uppercase tracking-widest text-on-surface-variant/60"
                                     >
                                         Job ID
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60"
+                                        class="px-6 py-3 app-text font-bold uppercase tracking-widest text-on-surface-variant/60"
                                     >
                                         Date
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60"
+                                        class="px-6 py-3 app-text font-bold uppercase tracking-widest text-on-surface-variant/60"
                                     >
                                         Location
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant/60"
+                                        class="px-6 py-3 app-text font-bold uppercase tracking-widest text-on-surface-variant/60"
                                     >
                                         Status
                                     </th>
@@ -305,7 +305,7 @@ const recentAudits = [
                                     </td>
                                     <td class="px-6 py-4">
                                         <span
-                                            class="px-3 py-1 text-[10px] font-bold rounded-full uppercase tracking-tighter"
+                                            class="px-3 py-1 app-text font-bold rounded-full uppercase tracking-tighter"
                                             :class="
                                                 audit.status === 'Completed'
                                                     ? 'bg-green-50 text-green-700'

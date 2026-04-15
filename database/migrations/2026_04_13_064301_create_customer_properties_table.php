@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('customer_properties', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('customer_id');
+            $table->foreign('customer_id')->references('id')->on('customers')->cascadeOnDelete();
             $table->string('name')->nullable();
             $table->string('address')->nullable();
             $table->string('suburb')->nullable();

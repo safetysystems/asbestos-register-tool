@@ -31,28 +31,27 @@ const sidebarClasses = computed(() =>
 <template>
     <aside
         id="sidebar"
-        class="h-screen w-64 fixed left-0 top-0 bg-gray-100 dark:bg-gray-950 flex flex-col p-4 space-y-2 z-[60] transition-transform duration-300"
+        class="h-screen w-66 fixed left-0 top-0 bg-gray-100 dark:bg-gray-950 flex flex-col p-4 space-y-2 z-[60] transition-transform duration-300"
         :class="sidebarClasses"
     >
 
         <div class="flex items-center justify-between px-4 py-6 mb-4">
-            <button
-                type="button"
-                class="lg:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-200/60 dark:text-gray-300 dark:hover:bg-gray-800/60"
-                @click="emit('close-sidebar')"
-            >
-                <span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
-            </button>
-
             <div class="flex items-center min-w-0 flex-1">
             <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center mr-3 shadow-sm">
                 <span class="material-symbols-outlined text-on-primary-container" data-icon="token">token</span>
             </div>
             <div>
                 <h2 class="text-lg font-black text-gray-900 dark:text-white leading-tight">Curated Canvas</h2>
-                <p class="text-[10px] font-medium tracking-widest uppercase text-on-surface-variant/60">Enterprise Admin</p>
+                <p class="app-text font-medium tracking-widest uppercase text-on-surface-variant/60">Enterprise Admin</p>
             </div>
             </div>
+            <button
+                type="button"
+                class="lg:hidden rounded-lg text-gray-600 hover:bg-gray-200/60 dark:text-gray-300 dark:hover:bg-gray-800/60"
+                @click="emit('close-sidebar')"
+            >
+                <span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+            </button>
         </div>
 
         <nav class="flex-grow space-y-1">
@@ -79,8 +78,16 @@ const sidebarClasses = computed(() =>
                 :class="itemClasses('/asbestos-audits', 'bg-white dark:bg-gray-900 text-orange-600 dark:text-orange-400 shadow-sm font-bold', 'text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-gray-800/50')"
                 href="/asbestos-audits"
             >
-                <span class="material-symbols-outlined mr-3" data-icon="verified_user">verified_user</span>
-                <span class="text-sm font-medium tracking-wide uppercase">Asbestos Audits</span>
+                <span class="material-symbols-outlined mr-3" data-icon="clinical_notes">clinical_notes</span>
+                <span class="text-sm font-medium tracking-wide uppercase">Asbestos Audit</span>
+            </a>
+            <a
+                class="flex items-center px-4 py-3 rounded-lg transition-transform scale-95 active:scale-100"
+                :class="itemClasses('/asbestos-inspector', 'bg-white dark:bg-gray-900 text-orange-600 dark:text-orange-400 shadow-sm font-bold', 'text-gray-600 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-gray-800/50')"
+                href="/asbestos-inspector"
+            >
+                <span class="material-symbols-outlined mr-3" data-icon="groups_2">groups_2</span>
+                <span class="text-sm font-medium tracking-wide uppercase">Asbestos Inspector</span>
             </a>
         </nav>
 

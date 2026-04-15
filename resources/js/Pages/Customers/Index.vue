@@ -77,11 +77,11 @@ function deleteCustomer() {
               <input
                 v-model="search"
                 type="text"
-                placeholder="Search customers..."
-                class="pl-10 pr-4 py-2 w-64 bg-surface-container-highest border-none rounded-lg app-text focus:ring-2 focus:ring-primary-container outline-none transition-all"
+                placeholder="Search"
+                class="pl-10 pr-4 py-3 w-64 bg-surface-container-highest border-none rounded-lg app-text focus:ring-2 focus:ring-primary-container outline-none transition-all"
               />
             </div>
-            <Link href="/customers/create" class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-black text-[10px] uppercase tracking-[0.2em] hover:bg-orange-500 transition-all shadow-sm">
+            <Link href="/customers/create" class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-black app-text uppercase tracking-[0.2em] hover:bg-orange-500 transition-all shadow-sm">
               <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
               Add New
             </Link>
@@ -94,7 +94,7 @@ function deleteCustomer() {
             <thead>
               <tr class="border-b border-surface-container">
                 <th class="w-10 px-6 py-4"></th>
-                <th class="px-6 py-4 app-text font-bold uppercase tracking-widest text-on-surface-variant/60">Customer Name</th>
+                <th class="px-6 py-4 app-text font-bold uppercase tracking-widest text-on-surface-variant/60">Name</th>
                 <th class="px-6 py-4 app-text font-bold uppercase tracking-widest text-on-surface-variant/60">Email</th>
                 <th class="px-6 py-4 app-text font-bold uppercase tracking-widest text-on-surface-variant/60">Phone</th>
                 <th class="px-6 py-4 app-text font-bold uppercase tracking-widest text-on-surface-variant/60">Address</th>
@@ -139,7 +139,7 @@ function deleteCustomer() {
                         <Link :href="`/customers/${customer.id}/edit`" class="p-2 hover:bg-surface-container-high rounded-lg transition-colors text-on-surface-variant" title="Edit User">
                           <span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
                         </Link>
-                        <button class="p-2 hover:bg-error-container/20 rounded-lg transition-colors text-error" title="Delete User" @click="confirmDelete(customer)">
+                        <button class="p-2 hover:bg-error-container/20 rounded-lg transition-colors text-error cursor-pointer" title="Delete User" @click="confirmDelete(customer)">
                           <span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
                         </button>
                       </div>
@@ -157,7 +157,7 @@ function deleteCustomer() {
                         <h3 class="text-xs font-black uppercase tracking-[0.2em] text-on-surface-variant/60 mb-4 flex items-center gap-2">
                           <span class="material-symbols-outlined text-sm" data-icon="home_work">home_work</span>
                           Properties
-                          <span class="text-[10px] font-bold text-on-surface-variant/40 normal-case tracking-normal">({{ customer.properties?.length || 0 }})</span>
+                          <span class="app-text font-bold text-on-surface-variant/40 normal-case tracking-normal">({{ customer.properties?.length || 0 }})</span>
                         </h3>
 
                         <div v-if="customer.properties?.length" class="flex flex-col gap-3">
@@ -172,7 +172,7 @@ function deleteCustomer() {
                               </div>
                               <div>
                                 <p class="text-sm font-bold text-on-surface">{{ property.name || 'Unnamed Property' }}</p>
-                                <p class="text-[10px] font-black text-on-surface-variant/40 uppercase tracking-widest leading-none mt-1">
+                                <p class="app-text font-black text-on-surface-variant/40 uppercase tracking-widest leading-none mt-1">
                                   {{ [property.address, property.suburb, property.state, property.postcode].filter(Boolean).join(', ') || 'No address' }}
                                 </p>
                               </div>
@@ -182,8 +182,8 @@ function deleteCustomer() {
                                 {{ property.property_type }}
                               </span>
                               <div v-if="property.contact_name" class="text-right hidden md:block">
-                                <p class="text-[10px] font-bold text-on-surface-variant">{{ property.contact_name }}</p>
-                                <p class="text-[10px] text-on-surface-variant/50">{{ property.contact_phone }}</p>
+                                <p class="app-text font-bold text-on-surface-variant">{{ property.contact_name }}</p>
+                                <p class="app-text text-on-surface-variant/50">{{ property.contact_phone }}</p>
                               </div>
                             </div>
                           </div>

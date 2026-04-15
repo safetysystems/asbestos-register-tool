@@ -19,15 +19,15 @@ import Button from "@/Components/Common/Button.vue";
 					<form class="space-y-6" @submit.prevent>
 						<!-- Email Input -->
 						<div class="space-y-2">
-							<label class="block text-[10px] uppercase tracking-widest font-bold text-on-surface-variant" for="email">Email Address</label>
+							<label class="block app-text uppercase tracking-widest font-bold text-on-surface-variant" for="email">Email Address</label>
 							<input class="w-full h-12 px-4 bg-surface-container-low border border-outline-variant/30 rounded-sm focus:ring-2 focus:ring-primary-container transition-all text-on-surface placeholder:text-on-surface-variant/50" id="email" name="email" placeholder="Email" type="email" />
 						</div>
 
 						<!-- Password Input -->
 						<div class="space-y-2">
 							<div class="flex justify-between items-center">
-								<label class="block text-[10px] uppercase tracking-widest font-bold text-on-surface-variant" for="password">Password</label>
-								<a class="text-[10px] uppercase tracking-widest font-bold text-primary hover:text-on-primary-container transition-colors" href="#">Forgot Password?</a>
+								<label class="block app-text uppercase tracking-widest font-bold text-on-surface-variant" for="password">Password</label>
+								<a class="app-text uppercase tracking-widest font-bold text-primary hover:text-on-primary-container transition-colors" href="#">Forgot Password?</a>
 							</div>
 							<input class="w-full h-12 px-4 bg-surface-container-low border border-outline-variant/30 rounded-sm transition-all text-on-surface placeholder:text-on-surface-variant/50" id="password" name="password" placeholder="Password" type="password" />
 						</div>
@@ -42,11 +42,11 @@ import Button from "@/Components/Common/Button.vue";
 
 			<!-- Footer: Centered -->
 			<footer class="mt-12 flex flex-col items-center gap-4 px-8 text-center">
-				<span class="text-[10px] uppercase tracking-widest font-medium text-zinc-400">© 2024 The Curated Canvas. All rights reserved.</span>
+				<span class="app-text uppercase tracking-widest font-medium text-zinc-400">© 2024 The Curated Canvas. All rights reserved.</span>
 				<div class="flex gap-4">
-					<a class="text-[10px] uppercase tracking-widest font-medium text-zinc-400 hover:text-primary transition-colors" href="#">Privacy Policy</a>
-					<a class="text-[10px] uppercase tracking-widest font-medium text-zinc-400 hover:text-primary transition-colors" href="#">Terms of Service</a>
-					<a class="text-[10px] uppercase tracking-widest font-medium text-zinc-400 hover:text-primary transition-colors" href="#">Contact</a>
+					<a class="app-text uppercase tracking-widest font-medium text-zinc-400 hover:text-primary transition-colors" href="#">Privacy Policy</a>
+					<a class="app-text uppercase tracking-widest font-medium text-zinc-400 hover:text-primary transition-colors" href="#">Terms of Service</a>
+					<a class="app-text uppercase tracking-widest font-medium text-zinc-400 hover:text-primary transition-colors" href="#">Contact</a>
 				</div>
 			</footer>
 		</main>

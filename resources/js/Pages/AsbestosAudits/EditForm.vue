@@ -1,9 +1,43 @@
 <script setup>
-import { Head } from "@inertiajs/vue3";
-import { onBeforeUnmount, ref, watch } from "vue";
+import { Head, useForm } from "@inertiajs/vue3";
+import { onBeforeUnmount, ref, watch, computed } from "vue";
 import AppShell from "@/Components/Layout/AppShell.vue";
 import Footer from "@/Components/Layout/Footer.vue";
 import Button from "@/Components/Common/Button.vue";
+
+const props = defineProps({
+    audit: Object,
+    properties: Array,
+});
+
+const form = useForm({
+    property_id: props.audit?.property_id ?? null,
+    audit_date: props.audit?.audit_date ? props.audit.audit_date.split('T')[0] : '',
+    audit_hours: props.audit?.audit_hours ?? '',
+    job_type: props.audit?.job_type ?? '',
+    labelling_status: props.audit?.labelling_status ?? '',
+    qr_number: props.audit?.qr_number ?? '',
+    installation_status: props.audit?.installation_status ?? '',
+    lead_status: props.audit?.lead_status ?? '',
+    samples_taken: props.audit?.samples_taken ?? '',
+    smf_status: props.audit?.smf_status ?? '',
+    smf_notes: props.audit?.smf_notes ?? '',
+    samples: props.audit?.samples ?? [],
+});
+
+const customerName = computed(() => props.audit?.property?.customer?.name || '—');
+const propertyName = computed(() => props.audit?.property?.name || '—');
+const propertyAddress = computed(() => {
+    const p = props.audit?.property;
+    if (!p) return '—';
+    return [p.address, p.suburb, p.state, p.postcode].filter(Boolean).join(', ') || '—';
+});
+
+function submitForm() {
+    form.put(`/asbestos-audits/${props.audit.id}`, {
+        preserveScroll: true,
+    });
+}
 
 const isSampleModalOpen = ref(false);
 
@@ -25,10 +59,34 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <Head title="Asbestos Audits | title" />
+    <Head :title="`Asbestos Audits | Edit #${audit?.id}`" />
     <AppShell>
         <div class="flex-1">
             <div class="pt-24 px-4 md:px-8 pb-12 transition-all duration-300">
+
+                <!-- Customer & Property Info -->
+                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 flex flex-col w-full mb-6">
+                    <div class="px-4 md:px-8 py-5 border-b border-surface-container flex justify-between items-center bg-[#fdfdfd] rounded-t-xl">
+                        <h3 class="text-lg font-bold text-on-surface tracking-tight uppercase app-text-medium">Customer & Property</h3>
+                    </div>
+                    <div class="p-4 md:p-10">
+                        <div class="flex flex-col md:flex-row gap-4 md:gap-8">
+                            <div class="flex-1">
+                                <p class="app-text font-semibold text-stone-400 uppercase tracking-widest mb-1">Customer</p>
+                                <p class="text-sm font-bold text-on-surface">{{ customerName }}</p>
+                            </div>
+                            <div class="flex-1">
+                                <p class="app-text font-semibold text-stone-400 uppercase tracking-widest mb-1">Property</p>
+                                <p class="text-sm font-bold text-on-surface">{{ propertyName }}</p>
+                            </div>
+                            <div class="flex-1">
+                                <p class="app-text font-semibold text-stone-400 uppercase tracking-widest mb-1">Address</p>
+                                <p class="text-sm text-on-surface-variant/70">{{ propertyAddress }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Top Section: Site Details & Info Cards -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
                     <!-- Site Details Form -->
@@ -43,10 +101,21 @@ onBeforeUnmount(() => {
                             >
                                 Site details
                             </h3>
-                            <Button>
-                                Edit
+                            <Button @click="submitForm" :disabled="form.processing">
+                                {{ form.processing ? 'Saving...' : 'Save' }}
                             </Button>
                         </div>
+
+                        <!-- Validation Errors -->
+                        <div v-if="Object.keys(form.errors).length" class="px-4 md:px-10 py-3">
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <p class="text-sm font-bold text-red-800 mb-2">Please fix the following errors:</p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li v-for="(error, field) in form.errors" :key="field" class="text-sm text-red-700">{{ error }}</li>
+                                </ul>
+                            </div>
+                        </div>
+
                         <div class="p-4 md:p-10 flex-grow">
                             <div
                                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6"
@@ -54,144 +123,156 @@ onBeforeUnmount(() => {
                                 <!-- Audit Date -->
                                 <div class="space-y-1">
                                     <label
-                                        class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                        class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                         >Audit Date</label
                                     >
                                     <input
+                                        v-model="form.audit_date"
                                         type="date"
-                                        value="2026-12-04"
                                         class="w-full bg-surface-container-low border-none rounded-lg py-5 px-4 text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all"
                                     />
                                 </div>
                                 <!-- Audit Hours -->
                                 <div class="space-y-1">
                                     <label
-                                        class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                        class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                         >Audit Hours</label
                                     >
                                     <input
+                                        v-model="form.audit_hours"
                                         type="text"
-                                        value="08:30 - 15:45"
                                         class="w-full bg-surface-container-low border-none rounded-lg py-5 px-4 text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all"
                                     />
                                 </div>
                                 <!-- Job Type -->
                                 <div class="space-y-1">
                                     <label
-                                        class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                        class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                         >Job Type</label
                                     >
                                     <select
+                                        v-model="form.job_type"
                                         class="w-full bg-surface-container-low border-none rounded-lg py-5 px-4 text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all appearance-none cursor-pointer"
                                     >
-                                        <option>Div 5 update</option>
-                                        <option>Initial Survey</option>
-                                        <option>Re-inspection</option>
+                                        <option value="">Job Type</option>
+                                        <option value="Div 5 update">Div 5 update</option>
+                                        <option value="Initial Survey">Initial Survey</option>
+                                        <option value="Re-inspection">Re-inspection</option>
+                                        <option value="Management Plan Review">Management Plan Review</option>
+                                        <option value="Sampling Audit">Sampling Audit</option>
+                                        <option value="Refurbishment Review">Refurbishment Review</option>
+                                        <option value="Demolition Survey">Demolition Survey</option>
                                     </select>
                                 </div>
                                 <!-- Labelling -->
                                 <div class="space-y-1">
                                     <label
-                                        class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                        class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                         >Labelling</label
                                     >
                                     <select
+                                        v-model="form.labelling_status"
                                         class="w-full bg-surface-container-low border-none rounded-lg py-5 px-4 text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all appearance-none"
                                     >
-                                        <option>Select labelling status</option>
-                                        <option>Completed</option>
-                                        <option>Partial</option>
+                                        <option value="">Select labelling status</option>
+                                        <option value="Completed">Completed</option>
+                                        <option value="Partial">Partial</option>
+                                        <option value="Installed">Installed</option>
+                                        <option value="Pre-existing">Pre-existing</option>
                                     </select>
                                 </div>
                                 <!-- QR Number -->
                                 <div class="space-y-1">
                                     <label
-                                        class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                        class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                         >QR Number</label
                                     >
                                     <input
+                                        v-model="form.qr_number"
                                         type="text"
-                                        value="QR-ABT-240304"
                                         class="w-full bg-surface-container-low border-none rounded-lg py-5 px-4 text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all"
                                     />
                                 </div>
                                 <!-- Installed / Pre-existing -->
                                 <div class="space-y-1">
                                     <label
-                                        class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                        class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                         >Installed / Pre-existing</label
                                     >
                                     <select
+                                        v-model="form.installation_status"
                                         class="w-full bg-surface-container-low border-none rounded-lg py-5 px-4 text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all appearance-none"
                                     >
-                                        <option>
-                                            Select installation status
-                                        </option>
-                                        <option>Confirmed</option>
-                                        <option>Not Found</option>
+                                        <option value="">Select installation status</option>
+                                        <option value="Confirmed">Confirmed</option>
+                                        <option value="Not Found">Not Found</option>
+                                        <option value="Installed">Installed</option>
+                                        <option value="Pre-existing">Pre-existing</option>
                                     </select>
                                 </div>
                                 <!-- Lead Identified -->
                                 <div class="space-y-1">
                                     <label
-                                        class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                        class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                         >Lead Identified</label
                                     >
                                     <select
+                                        v-model="form.lead_status"
                                         class="w-full bg-surface-container-low border-none rounded-lg py-5 px-4 text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all appearance-none"
                                     >
-                                        <option>Select lead status</option>
-                                        <option>Yes</option>
-                                        <option>No</option>
+                                        <option value="">Select lead status</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
                                     </select>
                                 </div>
                                 <!-- Samples Taken -->
                                 <div class="space-y-1">
                                     <label
-                                        class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                        class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                         >Samples Taken</label
                                     >
                                     <input
+                                        v-model="form.samples_taken"
                                         type="number"
-                                        value="0"
                                         class="w-full bg-surface-container-low border-none rounded-lg py-5 px-4 text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all"
                                     />
                                 </div>
                                 <!-- PCB's Identified -->
                                 <div class="space-y-1">
                                     <label
-                                        class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                        class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                         >PCB's Identified</label
                                     >
                                     <select
+                                        v-model="form.smf_status"
                                         class="w-full bg-surface-container-low border-none rounded-lg py-5 px-4 text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all appearance-none"
                                     >
-                                        <option>Select PCB status</option>
-                                        <option>Yes</option>
-                                        <option>No</option>
+                                        <option value="">Select SMF status</option>
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
                                     </select>
                                 </div>
                                 <!-- SMF Identified -->
                                 <div class="space-y-1">
                                     <label
-                                        class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                        class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                         >SMF Identified</label
                                     >
                                     <select
-                                        class="w-full bg-surface-container-low border-none rounded-lg py-5 px-4 text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all appearance-none"
+                                        disabled
+                                        class="w-full bg-surface-container-low border-none rounded-lg py-5 px-4 text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all appearance-none opacity-50"
                                     >
-                                        <option>Select SMF status</option>
-                                        <option>Yes</option>
-                                        <option>No</option>
+                                        <option>Reserved</option>
                                     </select>
                                 </div>
                                 <!-- SMF Notes -->
                                 <div class="md:col-span-2 space-y-1">
                                     <label
-                                        class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                        class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                         >SMF Notes</label
                                     >
                                     <input
+                                        v-model="form.smf_notes"
                                         type="text"
                                         placeholder="Optional note about SMF location or condition."
                                         class="w-full bg-surface-container-low border-none rounded-lg py-5 px-4 text-sm focus:ring-2 focus:ring-primary-container outline-none transition-all"
@@ -382,7 +463,7 @@ onBeforeUnmount(() => {
                                             Site image
                                         </p>
                                         <p
-                                            class="text-[10px] text-stone-400 font-medium"
+                                            class="app-text text-stone-400 font-medium"
                                         >
                                             19/10/2022
                                         </p>
@@ -402,7 +483,7 @@ onBeforeUnmount(() => {
                                             Clearance certificate
                                         </p>
                                         <p
-                                            class="text-[10px] text-stone-400 font-medium"
+                                            class="app-text text-stone-400 font-medium"
                                         >
                                             14/11/2022
                                         </p>
@@ -422,7 +503,7 @@ onBeforeUnmount(() => {
                                             Asbestos report
                                         </p>
                                         <p
-                                            class="text-[10px] text-stone-400 font-medium"
+                                            class="app-text text-stone-400 font-medium"
                                         >
                                             13/02/2023
                                         </p>
@@ -442,7 +523,7 @@ onBeforeUnmount(() => {
                                             Sample Certificate
                                         </p>
                                         <p
-                                            class="text-[10px] text-stone-400 font-medium"
+                                            class="app-text text-stone-400 font-medium"
                                         >
                                             15/03/2023
                                         </p>
@@ -464,7 +545,7 @@ onBeforeUnmount(() => {
                         class="px-4 md:px-8 py-6 border-b border-surface-container bg-[#fcfcfc] rounded-t-xl"
                     >
                         <p
-                            class="text-[10px] font-semibold text-stone-400 uppercase tracking-[0.2em] mb-1"
+                            class="app-text font-semibold text-stone-400 uppercase tracking-[0.2em] mb-1"
                         >
                             SAMPLE REGISTER
                         </p>
@@ -498,7 +579,7 @@ onBeforeUnmount(() => {
                             class="p-4 bg-[#f8f9fa] border-l-4 border-stone-200 rounded-r-lg mb-8"
                         >
                             <p
-                                class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-1"
+                                class="app-text font-semibold text-stone-400 uppercase tracking-widest mb-1"
                             >
                                 SAMPLES TABLE
                             </p>
@@ -562,7 +643,7 @@ onBeforeUnmount(() => {
                                                         Sample 01
                                                     </p>
                                                     <p
-                                                        class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mt-0.5"
+                                                        class="app-text font-semibold text-stone-400 uppercase tracking-widest mt-0.5"
                                                     >
                                                         MODAL EDITING
                                                     </p>
@@ -628,7 +709,7 @@ onBeforeUnmount(() => {
                                                         Sample 02
                                                     </p>
                                                     <p
-                                                        class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mt-0.5"
+                                                        class="app-text font-semibold text-stone-400 uppercase tracking-widest mt-0.5"
                                                     >
                                                         MODAL EDITING
                                                     </p>
@@ -694,7 +775,7 @@ onBeforeUnmount(() => {
                                                         Sample 03
                                                     </p>
                                                     <p
-                                                        class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mt-0.5"
+                                                        class="app-text font-semibold text-stone-400 uppercase tracking-widest mt-0.5"
                                                     >
                                                         MODAL EDITING
                                                     </p>
@@ -773,7 +854,7 @@ onBeforeUnmount(() => {
                 >
                     <div>
                         <p
-                            class="text-[10px] font-semibold text-stone-400 uppercase tracking-[0.2em] mb-1"
+                            class="app-text font-semibold text-stone-400 uppercase tracking-[0.2em] mb-1"
                         >
                             Add Sample
                         </p>
@@ -799,7 +880,7 @@ onBeforeUnmount(() => {
                     >
                         <div class="mb-8">
                             <p
-                                class="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-1"
+                                class="app-text font-semibold text-stone-400 uppercase tracking-widest mb-1"
                             >
                                 SAMPLE DETAILS
                             </p>
@@ -814,7 +895,7 @@ onBeforeUnmount(() => {
                             <!-- Row 1: Sample & Photo -->
                             <div class="space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >SAMPLE</label
                                 >
                                 <input
@@ -825,7 +906,7 @@ onBeforeUnmount(() => {
                             </div>
                             <div class="space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >PHOTO</label
                                 >
                                 <input
@@ -838,7 +919,7 @@ onBeforeUnmount(() => {
                             <!-- Row 2: Building / Area -->
                             <div class="md:col-span-2 space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >BUILDING / AREA</label
                                 >
                                 <input
@@ -851,7 +932,7 @@ onBeforeUnmount(() => {
                             <!-- Row 3: Location -->
                             <div class="md:col-span-2 space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >LOCATION</label
                                 >
                                 <input
@@ -864,7 +945,7 @@ onBeforeUnmount(() => {
                             <!-- Row 4: Surface & Material -->
                             <div class="space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >SURFACE</label
                                 >
                                 <input
@@ -875,7 +956,7 @@ onBeforeUnmount(() => {
                             </div>
                             <div class="space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >MATERIAL</label
                                 >
                                 <input
@@ -888,7 +969,7 @@ onBeforeUnmount(() => {
                             <!-- Row 5: Hazardous Material & Approx Qty -->
                             <div class="space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >HAZARDOUS MATERIAL</label
                                 >
                                 <input
@@ -899,7 +980,7 @@ onBeforeUnmount(() => {
                             </div>
                             <div class="space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >APPROX. QTY (M2)</label
                                 >
                                 <input
@@ -912,7 +993,7 @@ onBeforeUnmount(() => {
                             <!-- Row 6: Condition & Readily Accessible -->
                             <div class="space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >CONDITION</label
                                 >
                                 <div class="relative">
@@ -928,7 +1009,7 @@ onBeforeUnmount(() => {
                             </div>
                             <div class="space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >READILY ACCESSIBLE</label
                                 >
                                 <div class="relative">
@@ -945,7 +1026,7 @@ onBeforeUnmount(() => {
                             <!-- Row 7: Friable & Hazard Priority -->
                             <div class="space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >FRIABLE</label
                                 >
                                 <div class="relative">
@@ -960,7 +1041,7 @@ onBeforeUnmount(() => {
                             </div>
                             <div class="space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >HAZARD PRIORITY</label
                                 >
                                 <div class="relative">
@@ -978,7 +1059,7 @@ onBeforeUnmount(() => {
                             <!-- Row 8: Comments -->
                             <div class="md:col-span-2 space-y-1">
                                 <label
-                                    class="block text-[10px] font-semibold text-stone-400 uppercase tracking-widest ml-1"
+                                    class="block app-text font-semibold text-stone-400 uppercase tracking-widest ml-1"
                                     >COMMENTS</label
                                 >
                                 <textarea
