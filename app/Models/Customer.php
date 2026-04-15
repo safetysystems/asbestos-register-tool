@@ -3,8 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'address',
+        'suburb',
+        'state',
+        'postcode',
+    ];
+
+    public function properties(): HasMany
+    {
+        return $this->hasMany(CustomerProperty::class);
+    }
 }

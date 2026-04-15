@@ -27,7 +27,7 @@ defineEmits(['toggle-sidebar']);
           <div class="flex items-center gap-3 pl-2">
             <div class="text-right hidden sm:block">
               <p class="text-sm font-semibold text-gray-900">Alex Rivers</p>
-              <p class="text-[10px] font-medium text-on-surface-variant/70 uppercase tracking-tighter">Super Admin</p>
+              <p class="app-text font-medium text-on-surface-variant/70 uppercase tracking-tighter">Super Admin</p>
             </div>
             <img alt="User profile" class="w-9 h-9 rounded-full border-2 border-primary-container/20 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKjFC81p1hdAJnjvGDoQo4LZxpXGzLz2BS04kNRf3zgwcY9-rBThlqJwf1lr0PG6PR6uCv9wS_rYgsKovJRn5snGFaYVqKmpysGj2UBuyrM32-lA1L4XX2ZaG5N9CTxUUu2YcV9bJ7m4qEv-QXJolbvAKDHOxn2QissB8CwGbQ5y7ktNxBeezCWNKG2xF7sndT3HS-BhC0dFpE1jXXWy-bQ88UIn0q5lDMvQ58pgkhLvpT-ZujBHlz1ec9PsJ_HazXU7qWEOZ2LA0" />
           </div>

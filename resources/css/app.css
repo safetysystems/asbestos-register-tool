@@ -21,7 +21,7 @@
     --color-secondary: #815524;
     --color-on-secondary-fixed: #2c1600;
     --color-surface-container-high: #e8e8e8;
-    --color-surface-container-highest: #e2e2e2;
+    --color-surface-container-highest: #f5f5f5;
     --color-tertiary-fixed-dim: #7cd0ff;
     --color-primary-container: #ff9900;
     --color-on-surface-variant: #554434;
@@ -63,6 +63,14 @@
     --radius-xl: 0.75rem;
 }
 
+@utility app-text {
+    font-size: 11px;
+}
+
+@utility app-text-medium {
+    font-size: 15px;
+}
+
 .login-page {
     font-family: 'Inter', sans-serif;
 }
@@ -90,4 +98,8 @@
 .brand-grid-pattern {
     background-image: radial-gradient(#8a5100 0.5px, transparent 0.5px);
     background-size: 32px 32px;
+}
+
+.leaflet-container {
+    z-index: 0;
 }
