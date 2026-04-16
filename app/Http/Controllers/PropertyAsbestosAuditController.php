@@ -113,7 +113,7 @@ class PropertyAsbestosAuditController extends Controller
         $existingIds = [];
 
         foreach (($validated['samples'] ?? []) as $sampleData) {
-            $updateData = collect($sampleData)->except(['id', 'images'])->toArray();
+            $updateData = collect($sampleData)->except(['id', 'images', 'delete_media_ids'])->toArray();
 
             if (! empty($sampleData['id'])) {
                 $asbestosaudit->samples()->where('id', $sampleData['id'])->update($updateData);
@@ -125,6 +125,16 @@ class PropertyAsbestosAuditController extends Controller
             }
 
             if ($sample) {
+                $deleteMediaIds = collect($sampleData['delete_media_ids'] ?? [])
+                    ->filter()
+                    ->map(fn ($id) => (int) $id)
+                    ->unique()
+                    ->values();
+
+                if ($deleteMediaIds->isNotEmpty()) {
+                    $sample->media()->whereIn('id', $deleteMediaIds)->get()->each->delete();
+                }
+
                 foreach (($sampleData['images'] ?? []) as $image) {
                     $sample->addMedia($image)->toMediaCollection('sample_images');
                 }
@@ -132,6 +142,11 @@ class PropertyAsbestosAuditController extends Controller
         }
 
         $asbestosaudit->samples()->whereNotIn('id', $existingIds)->delete();
+
+        if (($validated['redirect_to'] ?? null) === 'auditing') {
+            return redirect()->route('auditing.show', $asbestosaudit)
+                ->with('success', 'Asbestos audit updated successfully.');
+        }
 
         return redirect()->route('asbestosaudits.index')
             ->with('success', 'Asbestos audit updated successfully.');

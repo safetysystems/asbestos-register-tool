@@ -221,7 +221,12 @@ onBeforeUnmount(() => {
                       <p class="text-sm text-on-surface">{{ audit.property?.name || '—' }}</p>
                     </td>
                     <td class="px-6 py-5">
-                      <p class="text-sm text-on-surface-variant/70">{{ [audit.property?.address, audit.property?.suburb, audit.property?.state, audit.property?.postcode].filter(Boolean).join(', ') || '—' }}</p>
+                      <p
+                        class="text-sm text-on-surface-variant/70 max-w-[260px] truncate"
+                        :title="[audit.property?.address, audit.property?.suburb, audit.property?.state, audit.property?.postcode].filter(Boolean).join(', ') || '—'"
+                      >
+                        {{ [audit.property?.address, audit.property?.suburb, audit.property?.state, audit.property?.postcode].filter(Boolean).join(', ') || '—' }}
+                      </p>
                     </td>
                     <td class="px-6 py-5 text-right">
                       <div class="flex items-center justify-end gap-2" @click.stop>

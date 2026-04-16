@@ -28,6 +28,7 @@ class PropertyAsbestosAuditRequest extends FormRequest
             'samples_taken' => ['nullable', 'string', 'max:255'],
             'smf_status' => ['nullable', 'string', 'max:255'],
             'smf_notes' => ['nullable', 'string'],
+            'redirect_to' => ['nullable', 'string', 'max:255'],
             'samples' => ['nullable', 'array'],
             'samples.*.id' => ['nullable', 'integer'],
             'samples.*.sample_number' => ['nullable', 'string', 'max:255'],
@@ -44,6 +45,8 @@ class PropertyAsbestosAuditRequest extends FormRequest
             'samples.*.comments' => ['nullable', 'string'],
             'samples.*.images' => ['nullable', 'array'],
             'samples.*.images.*' => ['file', 'image', 'max:10240'],
+            'samples.*.delete_media_ids' => ['nullable', 'array'],
+            'samples.*.delete_media_ids.*' => ['integer'],
         ];
     }
 }
